@@ -1,6 +1,7 @@
 ﻿body {
     padding-top: 50px;
     padding-bottom: 20px;
+
 }
 
 /* Set padding to keep content from hitting the edges */
@@ -14,4 +15,87 @@ input,
 select,
 textarea {
     max-width: 280px;
+}
+.row{
+    width: 75%;
+    margin: 0 auto;
+    display:block;
+}
+.row:first-of-type{
+    margin-top:3%;
+}
+.recordBlock {
+    text-align: center;
+    padding: 3%;
+    color: #ffffff;
+    font-size: 2.5em;
+    cursor:pointer;
+}
+
+#viewRecord{
+    background-color:#fc974f
+}
+
+#addRecord{
+    background-color:#68cfcf;
+}
+
+.resultMulti {
+    margin-top: 4%;
+    padding: 25px 10px 10px 10px;
+    border: 1px solid #eaeaea;
+    position: relative;
+}
+.recordView,
+.recordView:hover{
+    cursor:pointer;
+    text-decoration:none;
+}
+
+#deleteIcon,
+#editIcon {
+    position: absolute;
+    top: 5px;
+    font-size: 0.9em;
+    cursor:pointer;
+}
+#deleteIcon{
+    right:5px;
+    color:#ff6969;
+}
+#editIcon {
+    right: 22px;
+}
+
+.resultSingle:last-of-type{
+    border-left: 1px solid #eaeaea;
+    padding-left: 5%;
+}
+.centeredSingle{
+    width:60%;
+    padding: 2% 5%;
+    margin:0 auto;
+    border: 1px solid #eaeaea;
+    position:relative;
+}
+.centeredSingle h2{
+    text-align:center;
+}
+
+#accountOwnerName{
+    width: 100% !important;
+}
+#createRecordForm .btn-primary,
+#updateRecordForm .btn-primary {
+    padding: 14px 28px;
+    font-size: 16px;
+    margin-left: 5%;
+}
+#updateRecordForm #recordType {
+    font-size: 1.8em;
+    text-align: center;
+    display: block;
+    border-bottom: 1px solid #e6e6e6;
+    padding-bottom: 2%;
+    margin-bottom: 2%;
 }
