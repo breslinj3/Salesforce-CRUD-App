@@ -1,6 +1,14 @@
 ﻿$(document).ready(function () {
     var recordTypeSelect ="<div class='form-group'><label name='recordType'>Record Type</label><select id='recordType' name='recordType' class='form-control'> \
                          <option value='' disabled selected>Please select:</option><option>Account</option><option>Donation</option></select></div>"
+
+    var loadingCircle = "<div class='sk-fading-circle'><div class='sk-circle1 sk-circle'></div >\
+            <div class='sk-circle2 sk-circle'></div><div class='sk-circle3 sk-circle'></div>\
+            <div class='sk-circle4 sk-circle'></div><div class='sk-circle5 sk-circle'></div>\
+            <div class='sk-circle6 sk-circle'></div><div class='sk-circle7 sk-circle'></div>\
+            <div class='sk-circle8 sk-circle'></div><div class='sk-circle9 sk-circle'></div>\
+            <div class='sk-circle10 sk-circle'></div><div class='sk-circle11 sk-circle'></div>\
+            <div class='sk-circle12 sk-circle'></div></div>";
 // Donation Fields
 
     var accountName = "<div class='form-group'><label for='AccountName'>Account Name</label><input id='AccountName' name='AccountName' type='text' class='form-control' /></div>";
@@ -61,6 +69,7 @@
         recordType = $("#recordType").val();
         recordId = $("#id").val();
         window.location.hash = "view/" + recordType + "/" + recordId;
+        $("#resultsRow").html(loadingCircle);
         renderViewRecordResult();
     })
 
@@ -82,7 +91,8 @@
     $(document).on('submit', "#createRecordForm", function (e) {
        e.preventDefault();
        var record;
-       var url = ($("#recordType").val() === "Donation" ? "/api/sfdonation" : "/api/sfaccount");
+        var url = ($("#recordType").val() === "Donation" ? "/api/sfdonation" : "/api/sfaccount");
+        $("#mainBody").append("<div class='loadOverlay'>" + loadingCircle + "</div>");
        if ($("#recordType").val() === "Donation") {
            record = {
                DonationName: $("#donationName").val(),
@@ -111,73 +121,35 @@
            data: record
        })
            .done(function (e) {
+               $(".loadOverlay").remove();
+               toastr.success("Record created.")
                recordType = $("#recordType").val();
                recordId = e["Id"];
                window.location.hash = "view/" + recordType + "/" + recordId;
            })
            .fail(function (e) {
-               alert("An error occured.")
+               $(".loadOverlay").remove();
+               toastr.error("An error occured.")
            });
       
     })
 
 //Show update form
     $(document).on('click', ".resultMulti #edit, .resultSingle #edit, .centeredSingle #edit", function () {
-        var type = $("#recordType").val()
-        var url = (type === "Donation" ? "/api/sfdonation/" : "/api/sfaccount/") + $(this).attr("data-record-id")
 
-        if (type === "Donation") {
-            var donationInfoPromise = $.getJSON(url);
-            $.when(donationInfoPromise).then(function (donationInfo) {
-                $.getJSON("/api/sfaccount/" + donationInfo["Account_Name__c"], function (accountInfo) {
-                    $("#mainBody").html("");
-
-                    $("#AccountId").typeahead('destroy');
-                    $("#AccountName").typeahead('destroy');
-
-                    $("#mainBody").html("<form id='updateRecordForm'><label id='recordType' data-record-type=" + type + ">Edit " + donationInfo["Name"] + "</label><div id='formContent'>" +
-                        accountName + donationName + amount + donationDate + "<input type='hidden' value=" + accountInfo["Id"] + " id='accountId' name='accountId' /><input type='hidden' id='recordId' data-record-id=" + donationInfo["Id"] + " /><button id='submit' class='btn btn-primary'>Update Donation</button>"
-                        + "</div></form>");
-
-                    $("#AccountName").val(accountInfo["Name"]);
-                    $("#donationName").val(donationInfo["Name"]);
-                    $("#amount").val(donationInfo["Amount__c"]);
-                    $("#donationDate").val(donationInfo["Donation_Date__c"]);
-
-                    typeahead_account_init();
-
-                });
-            });
-        } else if (type === "Account") {
-            $.getJSON(url, function (account) {
-                $("#mainBody").html("");
-
-                $("#mainBody").html("<form id='updateRecordForm'><label id='recordType' data-record-type=" + type + ">Edit " + account["Name"] + "</label><div id='formContent'>" +
-                    "<div class='col-lg-6 col-xs-12'>" + newAccountName + phone + email + "</div><div class='col-lg-6 col-xs-12'>" + addressStreet + addressCity + addressState + addressZip + addressCountry + "</div><br style='clear:both'><hr><input type='hidden' id='accountOwnerId' value=" + account["OwnerId"] + "><input type='hidden' id='recordId' data-record-id=" + account["Id"] + "><button id='submit' class='btn btn-primary'>Update Account</button>"
-                    + "</div></form>")
-
-                $("#newAccountName").val(account["Name"]);
-                $("#addressStreet").val(account["BillingStreet"])
-                $("#addressCity").val(account["BillingCity"])
-                $("#addressState").val(account["BillingState"])
-                $("#addressZip").val(account["BillingPostalCode"])
-                $("#addressCountry").val(account["BillingCountry"])
-                $("#phone").val(account["Phone"])
-                $("#email").val(account["Email__c"])
-
-            })
-
-        }
-
+            window.location.hash = "edit/" + $("#recordType").val() + "/" + $(this).attr("data-record-id");
 
     });
 
 //Update record
     $(document).on('submit', "#updateRecordForm", function (e) {
+        recordType = $("#recordType").attr("data-record-type");
+        recordId = $("#recordId").attr("data-record-id");
+        $("#mainBody").append("<div class='loadOverlay'>" + loadingCircle + "</div>");
         e.preventDefault();
         var record;
-        var url = ($("#recordType").attr("data-record-type") === "Donation" ? "/api/sfdonation/" : "/api/sfaccount/")+$("#recordId").attr("data-record-id");
-        if ($("#recordType").attr("data-record-type") === "Donation") {
+        var url = (recordType === "Donation" ? "/api/sfdonation/" : "/api/sfaccount/") + recordId;
+        if (recordType === "Donation") {
             record = {
                 DonationName: $("#donationName").val(),
                 Amount: $("#amount").val(),
@@ -185,7 +157,7 @@
                 AccountId: $("#accountId").val(),
             };
         }
-        else if ($("#recordType").attr("data-record-type") === "Account") {
+        else if (recordType === "Account") {
             record = {
                 AccountName: $("#newAccountName").val(),
                 AccountOwnerId: $("#accountOwnerId").val(),
@@ -205,45 +177,13 @@
             data: record
         })
             .done(function (data) {
-                if (data["attributes"]["type"] === "Account") {
-                    $("#mainBody").html("");
-                    var type = "Account";
-                    $("#mainBody").append("<div class='centeredSingle'><h2>General Information</h2> \
-                                <p>\
-                                Account Id: "+ data["Id"] + "<br />\
-                                Name: "+ data["Name"] + " <br />\
-                                Phone Number: "+ data["Phone"] + " <br />\
-                                Account Created: "+ moment(data["CreatedDate"]).format("l") + " <br />\
-                                </p><a id='delete' data-record-id=" + data["Id"] + " class='btn btn-primary'>Delete</a><a id='edit' data-record-id=" + data["Id"] + " class='btn btn-info'>Edit</a>\
-                                <h2>Addresses</h2>\
-                                <p>\
-                                    Billing Address:<br />"
-                        + data["BillingStreet"] + "<br />" +
-                        data["BillingCity"] + ", " + data["BillingState"] + " " + data["BillingPostalCode"]
-                        + "</p>\
-                      <input id='recordType' type='hidden' value="+type+" /></div>")
-
-                } else {
-                    $.getJSON("/api/sfaccount/" + data["Account_Name__c"], function (account) {
-                        alert("Done")
-                        var type = "Donation";
-                        $("#mainBody").html("");
-                        $("#mainBody").append("<div class='centeredSingle'><h2>General Information</h2> \
-                                <p>\
-                                Donation Id: "+ data["Id"] + "<br />\
-                                Account Name: "+ account["Name"] + "<br />\
-                                Donation Name: "+ data["Name"] + " <br />\
-                                Amount: $"+ data["Amount__c"] + " <br />\
-                                Donation Date: "+ moment(data["Donation_Date__c"]).format("l") + " <br />\
-                                </p><a id='delete' data-record-id=" + data["Id"] + " class='btn btn-primary'>Delete</a>\
-                                <a id='edit' data-record-id=" + data["Id"] + " class='btn btn-primary'>Edit</a>\
-                                <input id='recordType' type='hidden' value="+ type +" /></div>")
-                    });
-                   
-                }
+                $(".loadOverlay").remove();
+                toastr.success("Record updated.")
+                window.location.hash = "view/" + recordType + "/" + recordId;
             })
             .fail(function (e) {
-                alert("An error occured.")
+                $(".loadOverlay").remove();
+                toastr.error("An error occured.")
             });
 
     })
@@ -258,11 +198,12 @@
                 method: "DELETE"
             })
                 .done(function () {
+                    toastr.success("Record deleted.")
                     $("#id").val("All");
                     $("#viewRecordForm").trigger('submit');
                 })
                 .fail(function (e) {
-                    alert("An error occured.")
+                    toastr.error("An error occured.");
                 });
         }
     })
@@ -348,6 +289,7 @@
             recordId = hashArr[2];
             if (hashArr[0] === "#view") {
                 renderViewRecordForm();
+                $("#resultsRow").append(loadingCircle);
                 renderViewRecordResult();
                 $("#recordType").val(recordType);
                 $("#id").val(recordId);
@@ -356,6 +298,13 @@
                 recordType = hashArr[1];
                 $("#recordType").val(recordType);
                 populateAddRecordForm();
+            }
+            else if (hashArr[0] === "#edit") {
+                
+                recordType = hashArr[1];
+                recordId = hashArr[2];
+                    renderUpdateRecordForm();
+               
             }
         }
     }
@@ -386,13 +335,6 @@
         <div id='resultsRow' class='row'></div>");
     }
 
-    function renderAddRecordForm() {
-        window.location.hash = "add";
-        $("#mainBody").html("<form id='createRecordForm'>" + recordTypeSelect + "<div id='formContent'></div></form>\
-                <hr />\
-        <div id='resultsRow' class='row'></div>");
-    }
-
     function renderViewRecordResult() {
         if (recordType === "Account") {
             if (recordId === "All") {
@@ -401,6 +343,7 @@
                     if (data.length === 0) {
                         throw "No records in this recordType"
                     }
+
                     $("#resultsRow").html("");
                     for (var i = 0; i < data.length; i++) {
 
@@ -495,6 +438,13 @@
         }
     }
 
+    function renderAddRecordForm() {
+        window.location.hash = "add";
+        $("#mainBody").html("<form id='createRecordForm'>" + recordTypeSelect + "<div id='formContent'></div></form>\
+                <hr />\
+        <div id='resultsRow' class='row'></div>");
+    }
+
     function populateAddRecordForm() {
         $("#formContent").html("");
 
@@ -514,6 +464,69 @@
 
             typeahead_user_init();
         }
+    }
+
+    function renderUpdateRecordForm() {
+
+        var url = (recordType === "Donation" ? "/api/sfdonation/" : "/api/sfaccount/") + recordId;
+        $("#mainBody").append("<div class='loadOverlay'>" + loadingCircle + "</div>");
+
+        if (recordType === "Donation") {
+            var donationInfoPromise =
+                $.ajax({
+                    url: url,
+                    method: "GET"
+                })
+                    .done(function (donation) { return donation }).fail(function () { window.location.hash = "view/" + recordType + "/" + recordId });
+            $.when(donationInfoPromise).then(function (donationInfo) {
+                $.getJSON("/api/sfaccount/" + donationInfo["Account_Name__c"], function (accountInfo) {
+                    $("#mainBody").html("");
+
+                    $("#AccountId").typeahead('destroy');
+                    $("#AccountName").typeahead('destroy');
+
+                    $("#mainBody").html("<form id='updateRecordForm'><label id='recordType' data-record-type=" + recordType + ">Edit " + donationInfo["Name"] + "</label><div id='formContent'>" +
+                        accountName + donationName + amount + donationDate + "<input type='hidden' value=" + accountInfo["Id"] + " id='accountId' name='accountId' /><input type='hidden' id='recordId' data-record-id=" + donationInfo["Id"] + " /><button id='submit' class='btn btn-primary'>Update Donation</button>"
+                        + "</div></form>");
+
+                    $("#AccountName").val(accountInfo["Name"]);
+                    $("#donationName").val(donationInfo["Name"]);
+                    $("#amount").val(donationInfo["Amount__c"]);
+                    $("#donationDate").val(donationInfo["Donation_Date__c"]);
+
+                    typeahead_account_init();
+
+                });
+            });
+        }
+        else if (recordType === "Account") {
+            $.ajax({
+                url: url,
+                method: "GET"
+            })
+             .done(function (account) {
+                $("#mainBody").html("");
+
+                $("#mainBody").html("<form id='updateRecordForm'><label id='recordType' data-record-type=" + recordType + ">Edit " + account["Name"] + "</label><div id='formContent'>" +
+                    "<div class='col-lg-6 col-xs-12'>" + newAccountName + phone + email + "</div><div class='col-lg-6 col-xs-12'>" + addressStreet + addressCity + addressState + addressZip + addressCountry + "</div><br style='clear:both'><hr><input type='hidden' id='accountOwnerId' value=" + account["OwnerId"] + "><input type='hidden' id='recordId' data-record-id=" + account["Id"] + "><button id='submit' class='btn btn-primary'>Update Account</button>"
+                    + "</div></form>")
+
+                $("#newAccountName").val(account["Name"]);
+                $("#addressStreet").val(account["BillingStreet"])
+                $("#addressCity").val(account["BillingCity"])
+                $("#addressState").val(account["BillingState"])
+                $("#addressZip").val(account["BillingPostalCode"])
+                $("#addressCountry").val(account["BillingCountry"])
+                $("#phone").val(account["Phone"])
+                $("#email").val(account["Email__c"])
+
+                }).fail(function () {
+                    window.location.hash = "view/" + recordType + "/" + recordId
+                });
+
+        }
+
+
     }
 
  })

@@ -13,6 +13,7 @@ namespace SalesforceApi
             bundles.Add(new ScriptBundle("~/bundles/renderTools").Include(
                        "~/Scripts/moment.min.js",
                        "~/Scripts/typeahead.bundle.js",
+                       "~/Scripts/toastr.js",
                        "~/Scripts/renderJS.js"));
 
             // Use the development version of Modernizr to develop with and learn from. Then, when you're
@@ -27,6 +28,8 @@ namespace SalesforceApi
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
                       "~/Content/typeahead.css",
+                      "~/Content/toastr.css",
+                      "~/Content/spinkit.css",
                       "~/Content/site.css"));
         }
     }
