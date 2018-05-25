@@ -10,8 +10,15 @@ namespace SalesforceApi.SiteTools
 {
     public class SalesforceTools
     {
+        public Task Initialization { get; private set; }
+
         private static string oauthToken = "";
         private static string serviceUrl = "";
+
+        public SalesforceTools()
+        {
+            Initialization = SFLoginAsync();
+        }
 
         public async Task SFLoginAsync()
         {

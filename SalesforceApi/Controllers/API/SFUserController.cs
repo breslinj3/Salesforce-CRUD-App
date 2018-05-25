@@ -12,9 +12,10 @@ namespace SalesforceApi.Controllers.API
 {
     public class SFUserController : ApiController
     {
+        SalesforceTools sf = new SalesforceTools();
+
         public async Task<JToken> GetAccountsAsync(string query = null)
         {
-            var sf = new SalesforceTools();
 
             await sf.SFLoginAsync();
 
@@ -35,8 +36,6 @@ namespace SalesforceApi.Controllers.API
 
         public async Task<IHttpActionResult> GetAccountAsync(string id)
         {
-
-            var sf = new SalesforceTools();
 
             await sf.SFLoginAsync();
 

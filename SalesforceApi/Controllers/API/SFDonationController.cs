@@ -13,9 +13,10 @@ namespace SalesforceApi.Controllers.API
 {
     public class SFDonationController : ApiController
     {
+        SalesforceTools sf = new SalesforceTools();
+
         public async Task<JObject> GetDonationsAsync()
         {
-            var sf = new SalesforceTools();
 
             await sf.SFLoginAsync();
 
@@ -37,8 +38,6 @@ namespace SalesforceApi.Controllers.API
         public async Task<IHttpActionResult> GetDonationAsync(string id)
         {
 
-            var sf = new SalesforceTools();
-
             await sf.SFLoginAsync();
 
             var recordType = "Donation__c";
@@ -54,7 +53,6 @@ namespace SalesforceApi.Controllers.API
         {
             if (!ModelState.IsValid)
                 return BadRequest();
-            var sf = new SalesforceTools();
 
             await sf.SFLoginAsync();
 
@@ -77,7 +75,6 @@ namespace SalesforceApi.Controllers.API
         {
             if (!ModelState.IsValid)
                 return BadRequest();
-            var sf = new SalesforceTools();
 
             await sf.SFLoginAsync();
 
@@ -104,7 +101,6 @@ namespace SalesforceApi.Controllers.API
         {
             if (!ModelState.IsValid)
                 return BadRequest();
-            var sf = new SalesforceTools();
 
             await sf.SFLoginAsync();
 
