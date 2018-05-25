@@ -13,7 +13,6 @@ namespace SalesforceApi.SiteTools
         private static string oauthToken = "";
         private static string serviceUrl = "";
 
-
         public async Task SFLoginAsync()
         {
             HttpClient authClient = new HttpClient();

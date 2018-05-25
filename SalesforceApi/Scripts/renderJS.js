@@ -11,22 +11,22 @@
             <div class='sk-circle12 sk-circle'></div></div>";
 // Donation Fields
 
-    var accountName = "<div class='form-group'><label for='AccountName'>Account Name</label><input id='AccountName' name='AccountName' type='text' class='form-control' /></div>";
-    var donationName = "<div class='form-group'><label for='donationName'>Donation Name</label><input id='donationName' name='donationName' type='text' class='form-control' /></div>";
-    var amount = "<div class='form-group'><label for='amount'>Amount</label><input id='amount' name='amount' type='text' class='form-control' /></div>";
-    var donationDate = " <div class='form-group'><label for='donationDate'> Donation Date</label><input id='donationDate' name='donationDate' type='text' class='form-control' /></div>";
+    var accountName = "<div class='form-group'><label for='AccountName'>Account Name</label><input id='AccountName' name='AccountName' type='text' class='form-control' required/></div>";
+    var donationName = "<div class='form-group'><label for='donationName'>Donation Name</label><input id='donationName' name='donationName' type='text' class='form-control' required/></div>";
+    var amount = "<div class='form-group'><label for='amount'>Amount</label><input id='amount' name='amount' type='text' class='form-control' required/></div>";
+    var donationDate = " <div class='form-group'><label for='donationDate'> Donation Date</label><input id='donationDate' name='donationDate' type='text' class='form-control' required/></div>";
 
 //Account Fields
 
-    var newAccountName = "<div class='form-group'><label for='newAccountName'>Account Name</label><input id='newAccountName' name='newAccountName' type='text' class='form-control' /></div>";
-    var accountOwnerName = "<div class='form-group'><label for='accountOwnerName'>Owner Name</label><input id='accountOwnerName' name='accountOwnerName' type='text' class='form-control' /></div>";
-    var addressStreet = "<div class='form-group'><label for='addressStreet'>Billing Street</label><input id='addressStreet' name='addressStreet' type='text' class='form-control' /></div>";
-    var addressCity = "<div class='form-group'><label for='addressCity'>Billing City</label><input id='addressCity' name='addressCity' type='text' class='form-control' /></div>";
-    var addressState = "<div class='form-group'><label for='addressState'>Billing State</label><input id='addressState' name='addressState' type='text' class='form-control' /></div>";
-    var addressZip = "<div class='form-group'><label for='addressZip'>Billing Zip Code</label><input id='addressZip' name='addressZip' type='text' class='form-control' /></div>";
-    var addressCountry = "<div class='form-group'><label for='addressCountry'>Billing Country</label><input id='addressCountry' name='addressCountry' type='text' class='form-control' /></div>";
-    var phone = "<div class='form-group'><label for='phone'>Phone</label><input id='phone' name='phone' type='text' class='form-control' /></div>";
-    var email = "<div class='form-group'><label for='email'>Email</label><input id='email' name='email' type='text' class='form-control' /></div>";
+    var newAccountName = "<div class='form-group'><label for='newAccountName'>Account Name</label><input id='newAccountName' name='newAccountName' type='text' class='form-control' required /></div>";
+    var accountOwnerName = "<div class='form-group'><label for='accountOwnerName'>Owner Name</label><input id='accountOwnerName' name='accountOwnerName' type='text' class='form-control' required /></div>";
+    var addressStreet = "<div class='form-group'><label for='addressStreet'>Billing Street</label><input id='addressStreet' name='addressStreet' type='text' class='form-control' required /></div>";
+    var addressCity = "<div class='form-group'><label for='addressCity'>Billing City</label><input id='addressCity' name='addressCity' type='text' class='form-control' required /></div>";
+    var addressState = "<div class='form-group'><label for='addressState'>Billing State</label><input id='addressState' name='addressState' type='text' class='form-control' required /></div>";
+    var addressZip = "<div class='form-group'><label for='addressZip'>Billing Zip Code</label><input id='addressZip' name='addressZip' type='text' class='form-control' required /></div>";
+    var addressCountry = "<div class='form-group'><label for='addressCountry'>Billing Country</label><input id='addressCountry' name='addressCountry' type='text' class='form-control' required /></div>";
+    var phone = "<div class='form-group'><label for='phone'>Phone</label><input id='phone' name='phone' type='text' class='form-control' required /></div>";
+    var email = "<div class='form-group'><label for='email'>Email</label><input id='email' name='email' type='text' class='form-control' required /></div>";
 
 // search locations
 
@@ -48,13 +48,11 @@
 
     $(document).on('click', '#viewRecord', function () {
         window.location.hash = "view";
-        renderViewRecordForm();
-
     })
 
  //Render form for create options
     $(document).on('click', '#addRecord', function () {
-        renderAddRecordForm();
+        window.location.hash = "add";
     })
 
 // View Records
@@ -70,21 +68,18 @@
         recordId = $("#id").val();
         window.location.hash = "view/" + recordType + "/" + recordId;
         $("#resultsRow").html(loadingCircle);
-        renderViewRecordResult();
     })
 
  //Change date format
     $(document).on('blur', '#donationDate', function () {
-        $("#donationDate").val(moment($("#donationDate").val()).format("YYYY-MM-DD"))
-
+        var date = (moment($("#donationDate").val()).isValid() ? moment($("#donationDate").val()).format("YYYY-MM-DD") : "");
+        $("#donationDate").val(date);
     })
 
 //Show create form
     $(document).on('change', '#createRecordForm #recordType', function () {
         recordType = $("#recordType").val();
         window.location.hash = "add/" + recordType;
-        populateAddRecordForm();
-
     })
 
 //Create record
@@ -191,6 +186,7 @@
 //delete record
     $(document).on('click', ".resultMulti #delete,.resultSingle #delete,.centeredSingle #delete", function () {
         if (confirm("Are you sure you want to delete this record?")) {
+            $("#mainBody").append("<div class='loadOverlay'>" + loadingCircle + "</div>");
             var url = ($("#recordType").val() === "Donation" ? "/api/sfdonation/" : "/api/sfaccount/") + $(this).attr("data-record-id");
 
             $.ajax({
@@ -198,9 +194,11 @@
                 method: "DELETE"
             })
                 .done(function () {
-                    toastr.success("Record deleted.")
-                    $("#id").val("All");
-                    $("#viewRecordForm").trigger('submit');
+                    $(".loadOverlay").remove();
+                    toastr.success("Record deleted.");
+                    recordType = $("#recordType").val()
+                    recordId = "All";
+                    renderViewRecordResult();
                 })
                 .fail(function (e) {
                     toastr.error("An error occured.");
@@ -393,12 +391,13 @@
                     $("#resultsRow").html("");
                     for (var i = 0; i < data["records"].length; i++) {
 
-                        $("#resultsRow").append("<div class='col-md-4 col-sm-6 col-xs-12'><div class='resultMulti'><p><a class='recordView' data-record-id=" + data["records"][i]["Id"] + ">" + data["records"][i]["Name"] + "</a><br />$"
-                            + data["records"][i]["Amount__c"] + "</p><a id='delete' data-record-id=" + data["records"][i]["Id"] + "> <i id='deleteIcon' class='fas fa-trash-alt'></i></a>\
+                        $("#resultsRow").append("<div class='col-md-4 col-sm-6 col-xs-12'><div class='resultMulti'><p><a class='recordView' data-record-id=" + data["records"][i]["Id"] + ">" + data["records"][i]["Name"] + "</a><br />"
+                            + "<span class='amount'>"+data["records"][i]["Amount__c"]+"</span>"+ "</p><a id='delete' data-record-id=" + data["records"][i]["Id"] + "> <i id='deleteIcon' class='fas fa-trash-alt'></i></a>\
                                         <a id='edit' data-record-id=" + data["records"][i]["Id"] + "><i id='editIcon' class='fas fa-edit'></i></a></div></div>")
 
 
                     }
+                    $(".amount").formatCurrency();
                 }).fail(function (e) {
                     $("#resultsRow").html("");
                     $("#resultsRow").append("<div class='centeredSingle'><h2>No records found.</h2></div>")
@@ -420,10 +419,11 @@
                                 <strong>Donation Id:</strong> "+ donationInfo["Id"] + "<br />\
                                 <strong>Account Name:</strong> "+ accountInfo["Name"] + "<br />\
                                 <strong>Donation Name:</strong> "+ donationInfo["Name"] + " <br />\
-                                <strong>Amount:</strong> $"+ donationInfo["Amount__c"] + " <br />\
+                                <strong>Amount:</strong> <span class='amount'>"+ donationInfo["Amount__c"] + "</span> <br />\
                                 <strong>Donation Date:</strong> "+ moment(donationInfo["Donation_Date__c"]).format("l") + " <br />\
                                 </p><a id='delete' data-record-id=" + donationInfo["Id"] + "><i id='deleteIcon' class='fas fa-trash-alt'></i></a> \
                                 <a id='edit' data-record-id=" + donationInfo["Id"] + "><i id='editIcon' class='fas fa-edit'></i></a></div>")
+                        $(".amount").formatCurrency();
                     }).fail(function () {
                         $("#resultsRow").html("");
                         $("#resultsRow").append("<div class='centeredSingle'><h2>An error occured retreiving account information for the donation.</h2></div>")
@@ -435,6 +435,7 @@
 
 
             }
+            
         }
     }
 
@@ -443,6 +444,16 @@
         $("#mainBody").html("<form id='createRecordForm'>" + recordTypeSelect + "<div id='formContent'></div></form>\
                 <hr />\
         <div id='resultsRow' class='row'></div>");
+        $("#createRecordForm").validate({
+            messages: {
+                AccountName: "Select the account this donation should be tied.",
+                donationName: "Enter the name for this donation",
+                newAccountName: "Please enter the name for this account.",
+                accountOwnerName: "Select the Salesforce Account that will manage this account."
+            }
+
+        });
+
     }
 
     function populateAddRecordForm() {
@@ -456,6 +467,7 @@
             $("#formContent").append(accountName + donationName + amount + donationDate + "<input type='hidden' value='' id='accountId' name='accountId' /><button id='submit' class='btn btn-primary'>Create Donation</button>");
 
             typeahead_account_init();
+         
         } else {
             $("#accountOwnerId").typeahead('destroy');
             $("#accountOwnerName").typeahead('destroy');
@@ -463,6 +475,7 @@
             $("#formContent").append("<hr><div class='col-lg-6 col-xs-12'>" + newAccountName + accountOwnerName + phone + email + "</div><div class='col-lg-6 col-xs-12'>" + addressStreet + addressCity + addressState + addressZip + addressCountry + "</div><br style='clear:both;'><hr><input type='hidden' id='accountOwnerId'/><button id='submit' class='btn btn-primary'>Create Account</button>")
 
             typeahead_user_init();
+            
         }
     }
 
@@ -496,6 +509,17 @@
 
                     typeahead_account_init();
 
+                    $("#updateRecordForm").validate({
+                        messages: {
+                            AccountName: "Select the account this donation should be tied.",
+                            donationName: "Enter the name for this donation",
+                            newAccountName: "Please enter the name for this account.",
+                            accountOwnerName: "Select the Salesforce Account that will manage this account."
+                        }
+
+                    });
+                  
+                    
                 });
             });
         }
@@ -518,7 +542,17 @@
                 $("#addressZip").val(account["BillingPostalCode"])
                 $("#addressCountry").val(account["BillingCountry"])
                 $("#phone").val(account["Phone"])
-                $("#email").val(account["Email__c"])
+                 $("#email").val(account["Email__c"])
+
+                 $("#updateRecordForm").validate({
+                     messages: {
+                         AccountName: "Select the account this donation should be tied.",
+                         donationName: "Enter the name for this donation",
+                         newAccountName: "Please enter the name for this account.",
+                         accountOwnerName: "Select the Salesforce Account that will manage this account."
+                     }
+
+                 });
 
                 }).fail(function () {
                     window.location.hash = "view/" + recordType + "/" + recordId
@@ -527,6 +561,8 @@
         }
 
 
+
     }
 
+  
  })
