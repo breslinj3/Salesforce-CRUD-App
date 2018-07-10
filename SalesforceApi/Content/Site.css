@@ -18,6 +18,9 @@ textarea {
 }
 
 /*Reusable Content*/
+.field-validation-valid {
+    display: none;
+}
 .error {
     color: red;
     font-size: 0.8em;
@@ -25,13 +28,7 @@ textarea {
     border-width: thin;
 }
 
-.loadOverlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-}
+
 .row{
     width: 75%;
     margin: 0 auto;
@@ -40,7 +37,6 @@ textarea {
 .row:first-of-type{
     margin-top:3%;
 }
-
 
 
 #mainBody {
@@ -56,6 +52,11 @@ textarea {
 
 #viewRecord{
     background-color:#fc974f
+}
+#mainRow a{
+    display:block;
+    text-decoration:none;
+    color:#ffffff
 }
 
 #addRecord{

@@ -1,0 +1,107 @@
+﻿@model SalesforceApi.Models.AccountInfo
+
+@{
+    ViewBag.Title = "AccountForm";
+    var formName = String.IsNullOrWhiteSpace(Model.Id) ? "createAccountForm" : "updateAccountForm";
+    var formHeader = String.IsNullOrWhiteSpace(Model.Id) ? "Create Account" : "Update Account";
+    var formButton = String.IsNullOrWhiteSpace(Model.Id) ? "Create" : "Update";
+}
+
+<h2>@formHeader</h2>
+
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = formName }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.AccountOwnerId, new { id = "accountOwnerId" })
+    @Html.HiddenFor(model => model.Id, new { id = "accountId" })
+
+    <div class="form-horizontal">
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.AccountName, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.AccountName, new { @class = "form-control", id = "accountName" })
+                @Html.ValidationMessageFor(model => model.AccountName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.OwnerName, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.OwnerName, new { @class = "form-control", id = "accountOwnerName" })
+                @Html.ValidationMessageFor(model => model.OwnerName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.BillingStreet, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.BillingStreet, new { @class = "form-control", id = "billingStreet" })
+                @Html.ValidationMessageFor(model => model.BillingStreet, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.BillingCity, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.BillingCity, new { @class = "form-control", id = "billingCity" })
+                @Html.ValidationMessageFor(model => model.BillingCity, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.BillingState, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.BillingState, new { @class = "form-control", id = "billingState" })
+                @Html.ValidationMessageFor(model => model.BillingState, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.BillingZip, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.BillingZip, new { @class = "form-control", id = "billingZip" })
+                @Html.ValidationMessageFor(model => model.BillingZip, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.BillingCountry, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.BillingCountry, new { @class = "form-control", id = "billingCountry" })
+                @Html.ValidationMessageFor(model => model.BillingCountry, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Phone, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.Phone, new { @class = "form-control", id = "phone" })
+                @Html.ValidationMessageFor(model => model.Phone, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Email, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.Email, new { @class = "form-control", id = "email" })
+                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="@formButton" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/renderTools")
+}

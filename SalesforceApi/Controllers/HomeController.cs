@@ -8,10 +8,15 @@ namespace SalesforceApi.Controllers
 {
     public class HomeController : Controller
     {
+        [Route("")]
         public ActionResult Index()
         {
-            ViewBag.Title = "Home Page";
+            return View();
+        }
 
+        [Route("details")]
+        public ActionResult Details()
+        {
             return View();
         }
     }

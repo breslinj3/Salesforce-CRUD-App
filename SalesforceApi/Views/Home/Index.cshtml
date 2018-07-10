@@ -1,15 +1,37 @@
 ﻿<div id="mainBody">
-    <div class="row">
-        <div id="viewRecord" class="col-md-6 col-sm-6 col-xs-12 recordBlock">
-            <i class="fas fa-address-card"></i>
-            <p>View a Record</p>
+    <div id="homeRow" class="row">
+        <div class="modal fade bd-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title" id="exampleModalCenterTitle">Select the record type to add:</h3>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <a href="/donation/new" class="btn btn-primary recordBtn">Donation</a>
+                        <a href="/Account/new" class="btn btn-primary recordBtn">Account</a>
+                        </div>
+                </div>
+            </div>
         </div>
-        <div id="addRecord" class="col-md-6 col-sm-6 col-xs-12 recordBlock">
-            <i class="fas fa-plus"></i>
-            <p>Add Record</p>
-        </div>
+        <a href="details">
+            <div id="viewRecord" class="col-md-6 col-sm-6 col-xs-12 recordBlock">
+                <i class="fas fa-address-card"></i>
+                <p>View a Record</p>
+            </div>
+        </a>
+        <a href="###" data-toggle="modal" data-target=".bd-example-modal-sm">
+            <div id="addRecord" class="col-md-6 col-sm-6 col-xs-12 recordBlock">
+                <div class="newOverlay"></div>
+                <i class="fas fa-plus"></i>
+                <p>Add Record</p>
+            </div>
+        </a>
     </div>
 </div>
+@Html.AntiForgeryToken()
 
 @section scripts
 {
@@ -17,5 +39,13 @@
     @Scripts.Render("~/bundles/jqueryval")
     @Scripts.Render("~/bundles/renderTools")
 
+    @functions{
+        public string TokenHeaderValue()
+        {
+            string cookieToken, formToken;
+            AntiForgery.GetTokens(null, out cookieToken, out formToken);
+            return cookieToken + ":" + formToken;
+        }
+    }
 
 }

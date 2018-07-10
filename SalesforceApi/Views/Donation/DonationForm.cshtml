@@ -1,0 +1,80 @@
+﻿@model SalesforceApi.Models.DonationInfo
+
+@{
+    ViewBag.Title = "Create Donation";
+    var formName = String.IsNullOrWhiteSpace(Model.Id) ? "createDonationForm" : "updateDonationForm";
+}
+@if (String.IsNullOrWhiteSpace(Model.Id))
+{
+    <h2>Create Donation</h2>
+}
+else{
+    <h2>Update Donation</h2>
+}
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = formName }))
+{
+    @*@Html.AntiForgeryToken()*@
+
+    <div class="form-horizontal">
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.AccountId, new { id = "accountId" })
+        @Html.HiddenFor(model => model.Id, new { id = "donationId" })
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.DonationName, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.DonationName, new { @class = "form-control", id = "donationName" })
+                @Html.ValidationMessageFor(model => model.DonationName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.AccountName, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+
+                @Html.TextBoxFor(model => model.AccountName, new { @class = "form-control", id = "accountName" })
+                @Html.ValidationMessageFor(model => model.AccountName, "", new { @class = "text-danger" })
+
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Amount, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.Amount, new { @class = "form-control", id = "amount" })
+                @Html.ValidationMessageFor(model => model.Amount, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.DonationDate, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.DonationDate, new { @class = "form-control", id = "donationDate" })
+                @Html.ValidationMessageFor(model => model.DonationDate, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                @if (String.IsNullOrWhiteSpace(Model.Id))
+            {
+                <input type="submit" value="Create" class="btn btn-default" />
+
+        }
+        else
+        {
+            <input type="submit" value="Update" class="btn btn-default" />
+    }
+            </div>
+        </div>
+    </div>
+}
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/renderTools")
+}

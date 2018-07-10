@@ -15,7 +15,7 @@ namespace SalesforceApi
                        "~/Scripts/moment.min.js",
                        "~/Scripts/typeahead.bundle.js",
                        "~/Scripts/toastr.js",
-                       "~/Scripts/renderJS.js"));
+                       "~/Scripts/siteTools.js"));
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
             "~/Scripts/jquery.validate*"));
 
